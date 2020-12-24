@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +23,11 @@ class MainActivity : AppCompatActivity() {
             checkCalendarPermission();
         }
         queryCalendars()
+    }
+
+    //向日历里面添加事件
+    fun addTips(view: View) {
+        
     }
 
     private fun queryCalendars() {
