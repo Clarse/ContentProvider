@@ -2,11 +2,13 @@ package com.example.contentprovider
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.ContactsContract
+import android.provider.Telephony
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +26,12 @@ class MainActivity : AppCompatActivity() {
             checkCalendarPermission();
         }
 //        queryCalendars()
+    }
+
+    //跳转到短信验证码页面
+    fun getCode(view: View) {
+        val intent = Intent(this, VerifyCodeActivity::class.java)
+        startActivity(intent)
     }
 
     //向日历里面添加事件
@@ -102,6 +110,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //获取短信内容
+    fun getSms(view: View) {
+        val contentResolver = contentResolver
+        val smsUri = Telephony.Sms.CONTENT_URI
+        val query = contentResolver.query(smsUri, null, null, null, null)
+        val columnNames = query?.columnNames
+        while (query?.moveToNext() == true) {
+            columnNames?.forEach {
+                Log.d(TAG, it + "------" + query.getString(query.getColumnIndex(it)))
+            }
+        }
+        query?.close()
+    }
+
     private fun queryCalendars() {
         val contentResolver = contentResolver
 //        val uri = Uri.parse("content://" + "com.android.calendar" + "/calendars")
@@ -122,9 +144,11 @@ class MainActivity : AppCompatActivity() {
         val readContactsPermission = checkSelfPermission(Manifest.permission.READ_CONTACTS)
         val readCalendarPermission = checkSelfPermission(Manifest.permission.READ_CALENDAR)
         val writeCalendarPermission = checkSelfPermission(Manifest.permission.WRITE_CALENDAR)
+        val readSmsPermission = checkSelfPermission(Manifest.permission.READ_SMS)
         if (readCalendarPermission == PackageManager.PERMISSION_GRANTED
             && writeCalendarPermission == PackageManager.PERMISSION_GRANTED
             && readContactsPermission == PackageManager.PERMISSION_GRANTED
+            && readSmsPermission == PackageManager.PERMISSION_GRANTED
         ) {
             //表明权限已申请
         } else {
@@ -132,7 +156,8 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(
                     Manifest.permission.WRITE_CALENDAR,
                     Manifest.permission.READ_CALENDAR,
-                    Manifest.permission.READ_CONTACTS
+                    Manifest.permission.READ_CONTACTS,
+                    Manifest.permission.READ_SMS
                 ), PERMISSION_REQUEST_CODE
             )
         }
@@ -145,9 +170,10 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.size == 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            if (grantResults.size == 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
                 && grantResults[2] == PackageManager.PERMISSION_GRANTED
+                && grantResults[3] == PackageManager.PERMISSION_GRANTED
             ) {
                 //有权限
             } else {
