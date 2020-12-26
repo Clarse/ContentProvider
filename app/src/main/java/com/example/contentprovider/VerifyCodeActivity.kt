@@ -50,7 +50,7 @@ class VerifyCodeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_verify_code)
     }
 
-    fun getSms() {
+    private fun getSms() {
         val uri = Telephony.Sms.CONTENT_URI
         val handler = Handler()
         contentResolver.registerContentObserver(uri, true, object : ContentObserver(handler) {
@@ -101,6 +101,8 @@ class VerifyCodeActivity : AppCompatActivity() {
         if (phoneNum.isEmpty() || verifyCode.isEmpty()) {
             Toast.makeText(this, "手机号码和验证码都不能为空", Toast.LENGTH_SHORT).show()
             return
+        } else {
+            getSms()
         }
     }
 
