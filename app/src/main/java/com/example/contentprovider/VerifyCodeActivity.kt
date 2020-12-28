@@ -1,22 +1,19 @@
 package com.example.contentprovider
 
 import android.content.UriMatcher
+import android.database.ContentObserver
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.provider.Telephony
-import android.text.Editable
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_verify_code.*
-import java.time.LocalDate
 import java.util.regex.Pattern
-import kotlin.system.measureTimeMillis
-import android.database.ContentObserver as ContentObserver
 
 class VerifyCodeActivity : AppCompatActivity() {
 
